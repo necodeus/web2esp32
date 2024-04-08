@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Web2ESP32</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="stylesheet" type="text/css" href="/styles/main.css" />
+        <link rel="icon" type="image/png" href="/favicon.png" />
+    </head>
+    <body>
+        <div class="background"></div>
+        <div class="background-overlay"></div>
+
+        <div class="top-margin"></div>
+
+        <div class="logo">
+            <img src="/favicon.png" />
+            <div id="scramble1">000000</div>
+            <div id="scramble2" class="black">2</div>
+            <div id="scramble3">000000</div>
+        </div>
+
+        <div style="width: 100%; max-width: 600px; margin: 0 15px; ">
+            <h1 style="color: white; border-top-left-radius: 5px; border-top-right-radius: 5px; overflow: hidden; font-size: 12px; letter-spacing: 2px; background-color: rgba(0, 0, 0, 80%); padding: 0 8px; height: 24px; display: flex; align-items: center;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-terminal"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>
+                &nbsp;Terminal
+            </h1>
+        </div>
+
+        <div class="commands-container">
+            <div  class="terminal-pattern"></div>
+            <div class="commands" id="terminal-list"></div>
+        </div>
+
+        <div style="border-bottom-right-radius: 5px; border-bottom-left-radius: 5px; min-height: 40px; overflow: hidden; margin-bottom: 10px; width: 100%; max-width: 600px; margin: 0 15px 15px 15px; background-color: rgba(0, 0, 0, 90%); backdrop-filter: blur(5px); ">
+            <div style="display: flex; height: 40px;">
+                <div style="font-size: 13px; font-family: monospace;display: flex; width: 30px; justify-content: center; align-self: center; color: white;">
+                    >
+                </div>
+                <input
+                    id="terminal-input"
+                    style="font-size: 13px; font-family: monospace; letter-spacing: 1px; width: calc(100% - 30px); height: 100%; padding: 0 30px 0 0; border: 0; background-color: transparent; color: white;"
+                    placeholder="Type 'help' to get list of available commands"
+                    autofocus
+                />
+            </div>
+        </div>
+
+        <div style="border-top-left-radius: 5px; border-top-right-radius: 5px; width: 100%; max-width: 600px; margin: 0 15px; display: flex; justify-content: space-between; overflow: hidden; background-color: rgba(255, 255, 255, 90%); height: 24px; padding: 0 8px;">
+            <h1 style="color: black;  font-size: 12px; letter-spacing: 2px; display: flex; align-items: center;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-save"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+                &nbsp;SD Card -&nbsp;<span id="current-path"></span>
+            </h1>
+            <div style="display: flex; align-items: center;" id="add-dir">
+                <img src="/icons/folder-plus.svg" style="display: block; width: 18px; height: 18px; margin-right: 2px;" />
+            </div>
+        </div>
+
+        <div class="files" id="sdcard-list">
+            <div class="file" style="height: 30px">
+                Loading...
+            </div>
+        </div>
+
+        <div class="preview" style="display: block; border-bottom-left-radius: 0; border-bottom-right-radius: 0; margin-bottom: 0;">
+            <div class="preview-header">File preview</div>
+            <div class="preview-container" id="preview-container" style="padding: 0px 15px 15px 15px; display: flex !important; ">
+                No file selected
+            </div>
+        </div>
+        <div style="width: 100%; max-width: 600px; margin: 0 15px; display: flex; justify-content: space-between; overflow: hidden; background-color: rgba(255, 255, 255, 90%); height: 24px; padding: 0 8px;">
+            <div style="padding: 0 5px 0 5px;font-size: 13px;font-weight: 600;">Upload</div>
+        </div>
+        <div style="border-bottom-left-radius: 5px; border-bottom-right-radius: 5px; width: 100%; max-width: 600px; margin: 0 15px; display: flex; justify-content: space-between; overflow: hidden; background-color: rgba(255, 255, 255, 90%); padding: 0 8px;">
+            <form action="http://192.168.1.163/upload" method="post" enctype="multipart/form-data"
+                style="position: relative; display: flex; justify-content: center; align-items: center; width: 100%; margin: 0; padding: 0; height: 100px; border: 1px dashed gray; margin-bottom: 10px; border-radius: 5px;">
+                <input id="file" type="file" name="file" style="top: 0;bottom: 0;left: 0;right: 0;opacity: 0;position: absolute;width: 100%;" />
+                <div style="font-size: 13px; text-align: center; line-height: 20px;">
+                    Click and select<br/>
+                    or<br/>
+                    drag and drop<br/>
+                </div>
+                <input type="hidden" name="path" value="/test/" />
+            </form>
+            
+        </div>
+
+        <div style="font-size: 12px; margin-top: 10px;">
+            Copyright &copy; 2024 Web2ESP32
+        </div>
+
+        <script src="/scripts/vendor/gsap-latest-beta.min.js"></script>
+        <script src="/scripts/vendor/ScrambleTextPlugin3.min.js"></script>
+        <script src="/scripts/animations.js"></script>
+        <script src="/scripts/websocket-manager.js"></script>
+        <script src="/scripts/terminal-manager.js"></script>
+        <script src="/scripts/sdcard-manager.js"></script>
+        <script src="/scripts/main.js"></script>
+    </body>
+</html>
